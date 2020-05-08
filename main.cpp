@@ -389,7 +389,7 @@ void del_remain(string stmp, int n){
     }
 }
 
-void HU() {
+/*void HU() {
     if (hand.size == 2) {
         if (hand.front == hand.back)return 1;
         else return 0;
@@ -403,7 +403,7 @@ void HU() {
 
 void quanzhongzuixiao(string a) {
     int shu_min = 1, feng_min = 1, jian_min = 1;//最小值下标
-    int shu_temp = shu_quan[1], feng_temp = feng_quan[1], jian_temp = jian_quan[1];//最小值
+    int shu_temp = shu_quan[1][0], feng_temp = feng_quan[1], jian_temp = jian_quan[1];//最小值
     char kind, num;
     for (int i = 2; i < 28; i++) {
         if (shu_quan[i] < shu_temp) {//>=使得权重相同时，先打序号大的牌
