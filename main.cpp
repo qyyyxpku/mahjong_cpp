@@ -54,6 +54,13 @@ void jiaquan(int i, int j){//当数牌只有一张时，增加1000权重
     }
 }
 
+void jiaquan2(int i, int j){//当数牌只有一张时，增加1000权重
+    if (shu[i * 9 + j] == 1) {
+        shu_quan_[i * 9 + j][0] += 100;
+        shu_quan_[i * 9 + j][1] += 100;
+    }
+}
+
 
 void dingfan() {
     int yiyou;
@@ -81,9 +88,8 @@ void dingfan() {
             ++duizi[4];
         }
     }
-
     //判断碰碰胡，三个以上对子
-    if (total_duizi >= 3) {
+    if (total_duizi >= 4) {
         fanzhong[0] = 1;
         for (int i = 0; i < 3; ++i) {
             for (int j = 1; j <= 9; ++j) {
@@ -104,6 +110,26 @@ void dingfan() {
             }
         }
         return;
+    }
+        if (total_duizi == 3) {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 1; j <= 9; ++j) {
+                if (shu[i * 9 + j] >= 2) {
+                    shu_quan_[i * 9 + j][0] += 100;
+                    shu_quan_[i * 9 + j][1] += 100;
+                }
+            }
+        }
+        for (int i = 1; i <= 4; ++i) {
+            if (feng[i] >= 2) {
+                feng_quan_[i] += 100;
+            }
+        }
+        for (int i = 1; i <= 3; ++i) {
+            if (jian[i] >= 2) {
+                jian_quan_[i] += 100;
+            }
+        }
     }
     //判断五门齐，风箭各一对,数牌至少有两种有一对或能吃
     yiyou = 0;
@@ -135,9 +161,9 @@ void dingfan() {
         }
         return;
     }
-    //判断混一色，某一色数牌和字牌共9张以上
+    //判断混一色，某一色数牌和字牌共10张以上
     for (int i = 0; i < 3; ++i) {
-        if (paizhong[i] >= (9 - paizhong[3] - paizhong[4])) {
+        if (paizhong[i] >= (10 - paizhong[3] - paizhong[4])) {
             fanzhong[0] = 3;
             fanzhong[1] = i;
             for (int j = 1; j <= 9; ++j) {
@@ -179,6 +205,10 @@ void dingfan() {
             }
             return;
         }
+                if (yiyou == 6) {
+            for (int j = 1; j <= 9; ++j) {
+                jiaquan2(i, j);
+            }}
     }
     //判断花龙，9张需有7张
     int hualong = 7;
@@ -197,6 +227,12 @@ void dingfan() {
             }
             return;
         }
+        if (yiyou == 6) {
+            for (int m = 1; m <= 3; ++m) {
+                jiaquan2(i, m);
+                jiaquan2((i + 1) % 3, m + 3);
+                jiaquan2((i + 2) % 3, m + 6);
+            }}
         yiyou = 0;
         yiyou += shunzi_paishu(i, 8);
         yiyou += shunzi_paishu((i + 1) % 3, 5);
@@ -210,6 +246,13 @@ void dingfan() {
                 jiaquan((i + 2) % 3, m);
             }
             return;
+        }
+         if (yiyou == 6) {
+            for (int m = 1; m <= 3; ++m) {
+                jiaquan2(i, m + 6);
+                jiaquan2((i + 1) % 3, m + 3);
+                jiaquan2((i + 2) % 3, m);
+            }
         }
     }
     //判断三色三同顺，9张需有7张
@@ -228,6 +271,13 @@ void dingfan() {
                 jiaquan(i, j + 1);
             }
             return;
+        }
+                if (yiyou == 6) {
+            for (int i = 0; i < 3; ++i) {
+                jiaquan2(i, j - 1);
+                jiaquan2(i, j);
+                jiaquan2(i, j + 1);
+            }
         }
     }
     //判断三色三步高，9张需有7张
@@ -249,6 +299,13 @@ void dingfan() {
                 }
                 return;
             }
+            if (yiyou ==6) {
+                for (int m = j - 1; m <= j + 1; ++m) {
+                    jiaquan2(i, m - 1);
+                    jiaquan2((i + 1) % 3, m);
+                    jiaquan2((i + 2) % 3, m + 1);
+                }
+              }
         }
         for (int i = 0; i < 3; ++i) {
             yiyou = 0;
@@ -266,6 +323,13 @@ void dingfan() {
                 }
                 return;
             }
+            if (yiyou == 6) {
+                for (int m = j - 1; m <= j + 1; ++m) {
+                    jiaquan2(i, m + 1);
+                    jiaquan2((i + 1) % 3, m);
+                    jiaquan2((i + 2) % 3, m - 1);
+                }
+            }            
         }
     }
 }
@@ -488,7 +552,7 @@ void del_remain(string stmp, int n){
     }
 }
 
-void HU() {
+/*void HU() {
     if (hand.size == 2) {
         if (hand.front == hand.back)return 1;
         else return 0;
@@ -502,11 +566,11 @@ void HU() {
 
 void quanzhongzuixiao(string a) {
     int shu_min = 1, feng_min = 1, jian_min = 1;//最小值下标
-    int shu_temp = shu_quan[1], feng_temp = feng_quan[1], jian_temp = jian_quan[1];//最小值
+    int shu_temp = shu_quan[1][0], feng_temp = feng_quan[1], jian_temp = jian_quan[1];//最小值
     char kind, num;
     for (int i = 2; i < 28; i++) {
         if (shu_quan[i] < shu_temp) {//>=使得权重相同时，先打序号大的牌
-            shu_temp = shu_quan[i];
+            shu_temp = shu_quan[i][0];
             shu_min = i;
         }
     }
